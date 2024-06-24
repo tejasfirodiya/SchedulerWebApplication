@@ -1,35 +1,19 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace SchedulerWebApplication.Pages;
 
 public class IndexModel : PageModel
 {
-    //private readonly IManageCalendarService _manageCalendarService;
-    //public ManageCalendarDropDownsViewModel ManageCalendarDropDownsViewModel { get; set; } = null!;
     private readonly ILogger<IndexModel> _logger;
-    //[BindProperty] public PersonalCalendarViewModel PersonalCalendarViewModel { get; set; } = null!;
-    //public List<PersonalCalendarViewModel> DataSource { get; set; }
     public List<object> MenuItems;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
-    public IndexModel(
-        //IManageCalendarService manageCalendarService,
-         ILogger<IndexModel> logger
-        )
+    public IndexModel(ILogger<IndexModel> logger)
     {
-        //_manageCalendarService = manageCalendarService;
         _logger = logger;
     }
 
     public async Task OnGetAsync()
     {
-        await LoadDropDown();
-        //PersonalCalendarViewModel = new PersonalCalendarViewModel();
-
-        //to get appointment list
-        //DataSource = await _manageCalendarService.GetAppointmentListAsync((int)CalendarTypeEnum.PersonalCalendar, (int?)VisibilityTypeEnum.Private, null);
-
         //implemented for right click on scheduler
         ShowContextMenu();
     }
@@ -92,85 +76,15 @@ public class IndexModel : PageModel
             }
         ];
     }
-
-    private async Task LoadDropDown()
-    {
-        //ManageCalendarDropDownsViewModel = await _manageCalendarService.GetManageCalendarDropDownsAsync(false);
-    }
-
-    //public async Task<IActionResult> OnPostSaveAsync([FromBody] EventData PersonalCalendarViewModel)
-    //{
-    //    try
-    //    {
-    //        await LoadDropDown();
-
-    //        //var app = PersonalCalendarViewModel.PersonalCalendarViewModelEventToAdd;
-
-    //        //app.CalendarTypeId = (int)CalendarTypeEnum.PersonalCalendar;
-    //        //await _manageCalendarService.InsertAppointmentAsync(app);
-
-    //        return await GetDataAsync();
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        _logger.LogError(ex, "Error in inserting appointment");
-    //        throw;
-    //    }
-    //}
-
-    //public async Task<IActionResult> OnPostUpdate([FromBody] EventData personalCalendarViewModel)
-    //{
-    //    try
-    //    {
-    //        await LoadDropDown();
-
-    //        //var app = personalCalendarViewModel.PersonalCalendarViewModelEventToAdd;
-    //        //await _manageCalendarService.UpdateAppointmentAsync(app);
-    //        //_clientNotificationService.AddNotification("Appointment Updated Successfully.", NotificationType.Success);
-    //        return await GetDataAsync();
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        _logger.LogError(ex, "Error in Updating Appointment");
-    //        throw;
-    //    }
-    //}
-
-    //public async Task<IActionResult> OnPostDeleteAsync([FromBody] EventData personalCalendarViewModel)
-    //{
-    //    try
-    //    {
-    //        await LoadDropDown();
-
-    //        //var app = personalCalendarViewModel.PersonalCalendarViewModelEventToAdd;
-    //        //await _manageCalendarService.DeleteAppointmentAsync(app.AppointmentUkId);
-
-    //        return await GetDataAsync();
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        _logger.LogError(ex, "Error in deleting appointment");
-    //        throw;
-    //    }
-    //}
-
-    public async Task<IActionResult> GetDataAsync()  // Here we return data to Schedule
-    {
-        //var data = await _manageCalendarService.GetAppointmentListAsync((int)CalendarTypeEnum.PersonalCalendar, (int?)VisibilityTypeEnum.Private, null);
-        //return new JsonResult(data);
-        return null;
-    }
-
-    public class EventData
-    {
-        //public PersonalCalendarViewModel PersonalCalendarViewModelEventToAdd { get; set; }
-    }
 }
 
 public class AppointmentData
 {
     public int Id { get; set; }
-    public string Subject { get; set; }
+    public string Subject { get; set; } = null!;
+    public string? Location { get; set; }
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }
+    public string? Description { get; set; }
+    public string? ContactNumber { get; set; }
 }

@@ -3,35 +3,20 @@
 @{
     ViewData["Title"] = "Home Page";
 
-    // string GetJson(DropDownItem<int>[] items)
-    // {
-    //     return JsonConvert.SerializeObject(items);
-    // }
-
-    // // Create a new instance of PersonalCalendarViewModel
-    // Model.PersonalCalendarViewModel = new PersonalCalendarViewModel();
-
     List<AppointmentData> appData = new List<AppointmentData>();
     appData.Add(new AppointmentData
-            { Id = 1, Subject = "Explosion of Betelgeuse Star", StartTime = new DateTime(2022, 2, 11, 9, 30, 0), EndTime = new DateTime(2022, 2, 11, 11, 0, 0) });
+            { Id = 1, Subject = "Explosion of Betelgeuse Star", StartTime = new DateTime(2024, 6, 11, 9, 30, 0), EndTime = new DateTime(2024, 6, 11, 11, 0, 0) });
     appData.Add(new AppointmentData
-            { Id = 2, Subject = "Thule Air Crash Report", StartTime = new DateTime(2022, 2, 12, 12, 0, 0), EndTime = new DateTime(2022, 2, 12, 14, 0, 0) });
+            { Id = 2, Subject = "Thule Air Crash Report", StartTime = new DateTime(2024, 6, 12, 12, 0, 0), EndTime = new DateTime(2024, 6, 12, 14, 0, 0) });
     appData.Add(new AppointmentData
-            { Id = 3, Subject = "Blue Moon Eclipse", StartTime = new DateTime(2022, 2, 13, 9, 30, 0), EndTime = new DateTime(2022, 2, 13, 11, 0, 0) });
+            { Id = 3, Subject = "Blue Moon Eclipse", StartTime = new DateTime(2024, 6, 13, 9, 30, 0), EndTime = new DateTime(2024, 6, 13, 11, 0, 0) });
     appData.Add(new AppointmentData
-            { Id = 4, Subject = "Meteor Showers in 2022", StartTime = new DateTime(2022, 2, 14, 13, 0, 0), EndTime = new DateTime(2022, 2, 14, 14, 30, 0) });
+            { Id = 4, Subject = "Meteor Showers in 2022", StartTime = new DateTime(2024, 6, 14, 13, 0, 0), EndTime = new DateTime(2024, 6, 14, 14, 30, 0) });
     appData.Add(new AppointmentData
-            { Id = 5, Subject = "Milky Way as Melting pot", StartTime = new DateTime(2022, 2, 15, 12, 0, 0), EndTime = new DateTime(2022, 2, 15, 14, 0, 0) });
+            { Id = 5, Subject = "Milky Way as Melting pot", StartTime = new DateTime(2024, 6, 15, 12, 0, 0), EndTime = new DateTime(2024, 6, 15, 14, 0, 0) });
+
+    var validationRules = new Dictionary<string, object>() { { "required", true } };
 }
-@* 
-@section Styles { *@
-    <style>
-        .text-underline {
-            text-decoration: underline !important;
-            color: black;
-        }
-    </style>
-@* } *@
 
 @* context menu styles *@
 <style>
@@ -66,22 +51,17 @@
 </style>
 
 <div class="control-section">
-
-    <div class="row mb-2">
-        <small class="text-danger fw-bold my-2">
-            * Use Single Click to Add Appointment
-        </small>
-    </div>
-
     <div class="schedule-wrapper">
-        <!-- Add buttons for viewing options -->
-        <button id="show24HoursBtn" class="e-btn e-custom">Show 24 Hours</button>
-        <button id="showBusinessHoursBtn" class="e-btn e-custom">Show Business Hours</button>
-
-        <ejs-schedule id="schedule" width="100%" height="650px" currentView="Month" startHour="08:00" endHour="18:00" selectedDate="new DateTime(DateTime.Today.Year,DateTime.Today.Month,DateTime.Today.Day)"
-                      showQuickInfo="false">
-            <e-schedule-eventsettings dataSource="appData"></e-schedule-eventsettings>
-            @* <e-schedule-eventsettings dataSource="Model.DataSource"></e-schedule-eventsettings> *@
+        <ejs-schedule id="schedule" currentView="Month" startHour="08:00" endHour="18:00" selectedDate="new DateTime(DateTime.Today.Year,DateTime.Today.Month,DateTime.Today.Day)" showQuickInfo="false">
+            <e-schedule-eventsettings dataSource="appData">
+                <e-eventsettings-fields>
+                    <e-field-subject name="Subject" title="Subject" validation="validationRules"></e-field-subject>
+                    <e-field-location name="Location"></e-field-location>
+                    <e-field-description name="Description"></e-field-description>
+                    <e-field-starttime name="StartTime" title="Start Time" validation="validationRules"></e-field-starttime>
+                    <e-field-endtime name="EndTime" title="End Time" validation="validationRules"></e-field-endtime>
+                </e-eventsettings-fields>
+            </e-schedule-eventsettings>
             <e-schedule-views>
                 <e-schedule-view option="Day"></e-schedule-view>
                 <e-schedule-view option="Week"></e-schedule-view>
@@ -95,272 +75,37 @@
     </div>
 </div>
 
-<script id="EventEditorHeaderTemplate" type="text/x-template">
-    ${if(!Subject)}<div>Create New Appointment</div>${else}<div>${Subject}</div>${/if}
-</script>
-
-<script id="EventEditorTemplate" type="text/x-template">
-    <table class="custom-event-editor" width="100%" cellpadding="5">
-        <tbody>
-            <tr>
-                <td class="e-textlabel">Subject</td>
-                <td colspan="4">
-                    <input name="Subject" value="${Subject}" type="text" class="form-control e-field e-input">
-                </td>
-            </tr>
-            <tr>
-                  <td class="e-textlabel">Start Time</td>
-                <td colspan="4">
-                     <input id="StartTime" name="StartTime" value="${StartTime}" type="text" class="form-control e-field e-input">
-                </td>
-                <td>
-                <div class="col ms-2">
-            <input id="allDayCheckbox" class="form-check-input" type="checkbox" onchange="toggleDateTimeFormat(this)">
-            <label class="e-textlabel">All Day</label>
-        </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="e-textlabel">End Time</td>
-                <td colspan="4">
-                      <input id="EndTime" name="EndTime" value="${EndTime}" type="text" class="form-control e-field e-input">
-                </td>
-            </tr>
-            <tr>
-                 <td class="e-textlabel">Location</td>
-                <td colspan="4">
-                    <input name="Location" value="${Location}" type="text" class="form-control e-field e-input">
-                </td>
-            </tr>
-            <tr>
-                 <td class="e-textlabel">Contact Number</td>
-                <td colspan="4">
-                    <input name="ContactNumber" value="${ContactNumber}" type="text" class="form-control e-field e-input">
-                </td>
-            </tr>
-            <tr>
-                <td class="e-textlabel">Visibility</td>
-                <td colspan="4">
-                        <input id="VisibilityId" name="VisibilityId" value="${VisibilityId}" type="text" class="form-control e-field e-input">
-                </td>
-            </tr>
-
-            <tr>
-                 <td class="e-textlabel">
-                    <label>Description</label>
-                </td>
-                <td colspan="4">
-                    <textarea id="Description" class="e-field e-input" name="Description" rows="3" cols="50"
-                        style="width: 100%; height: 60px !important; resize: vertical">${Description}</textarea>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="col ms-2">
-                        <input class="form-check-input" type="checkbox" id="recurrenceCheckbox" onchange="toggleRecurrence()" />
-                        <label class="e-textlabel">Recurrence</label>
-                    </div>
-                </td>
-            </tr>
-
-            <tr class="border" id="recurrenceRow">
-                <td class="border-end">
-                    <div class="row">
-                        <div class="col-8">
-                            <div class="col-4 ms-2 mb-timeIntervalGroup">
-                                <input class="form-check-input" id="hourlyRadio" type="radio" name="timeIntervalGroup" value="Hourly" onclick="hourlyRadioClicked()">
-                                <label class="form-check-label" for="hourlyRadio">Hourly</label>
-                            </div>
-                            <br>
-                            <div class="col-4 ms-2 mb-timeIntervalGroup">
-                                <input class="form-check-input" id="dailyRadio" type="radio" name="timeIntervalGroup" value="Daily" onclick="dailyRadioClicked()">
-                                <label class="form-check-label" for="dailyRadio">Daily</label>
-                            </div>
-                            <br>
-                            <div class="col-4 ms-2 mb-timeIntervalGroup">
-                                <input class="form-check-input" id="weeklyRadio" type="radio" name="timeIntervalGroup" value="Weekly" checked onclick="weeklyRadioClicked()">
-                                <label class="form-check-label" for="weeklyRadio">Weekly</label>
-                            </div>
-                            <br>
-                            <div class="col-4 ms-2 mb-timeIntervalGroup">
-                                <input class="form-check-input" id="monthly" type="radio" name="timeIntervalGroup" value="Monthly" onclick="monthlyRadioClicked()">
-                                <label class="form-check-label" for="monthly">Monthly</label>
-                            </div>
-                            <br>
-                            <div class="col-4 ms-2">
-                                <input class="form-check-input" id="yearly" type="radio" name="timeIntervalGroup" value="Yearly" onclick="yearlyRadioClicked()">
-                                <label class="form-check-label" for="yearly">Yearly</label>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <div id="hourlyOptions" style="display: none;">
-                        <!-- Hourly options UI here -->
-                         <div class="col">
-                            <div class="row mb-1">
-                                <div class="col-4"><label class="form-label in-line">Every</label></div>
-                                <div class="col-4"><input id="recurEveryHour" class="e-field e-input" type="number" min="1" value="1" name="recurEveryHour" style="width: 100% ;margin-left: -10px;"></div>
-                                <div class="col-4"><label class="form-label in-line">hour(s)</label></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="dailyOptions" style="display: none;">
-                        <!-- Daily options UI here -->
-                          <div class="col">
-                            <div class="row mb-1">
-                                <input class="form-check-input" id="dailyOptionRadio_one" type="radio" name="dailyOptionRadioGroup">
-                                <div class="col-auto"><label class="form-label in-line">Every</label></div>
-                                <div class="col-auto"><input id="recurEveryDay" class="e-field e-input" type="number" min="1" value="1" name="recurEveryDay"></div>
-                                <div class="col-auto"><label class="form-label in-line">day(s)</label></div>
-                            </div>
-
-                            <div class="row mb-1">
-                                <input class="form-check-input" id="dailyOptionRadio_two" type="radio" name="dailyOptionRadioGroup">
-                                <div><label class="form-label in-line">Every weekday</label></div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <div id="weeklyOptions">
-                        <!-- Your existing weekly options here -->
-                        <div class="col">
-                            <div class="row mb-1">
-                                <div class="col-4"><label class="form-label in-line">Recur Every</label></div>
-                                <div class="col-4"><input id="recurEveryWeek" class="e-field e-input" type="number" min="1" value="1" name="recurEveryWeek" style="width: 100% ;margin-left: -10px;"></div>
-                                <div class="col-4"><label class="form-label in-line">week(s) on</label></div>
-                            </div>
-                        </div>
-                        <div class="col mb-1">
-                            <div class="days-of-week ms-2">
-                                <div class="row">
-                                    <div class="col-3">
-                                        <input type="checkbox" id="sunday" class="form-check-input">
-                                        <label for="sunday" class="form-check-label">Sunday</label>
-                                    </div>
-                                    <div class="col-3">
-                                        <input type="checkbox" id="monday" class="form-check-input">
-                                        <label for="monday" class="form-check-label">Monday</label>
-                                    </div>
-                                    <div class="col-3">
-                                        <input type="checkbox" id="tuesday" class="form-check-input">
-                                        <label for="tuesday" class="form-check-label">Tuesday</label>
-                                    </div>
-                                    <div class="col-3">
-                                        <input type="checkbox" id="wednesday" class="form-check-input">
-                                        <label for="wednesday" class="form-check-label">Wednesday</label>
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-3">
-                                        <input type="checkbox" id="thursday" class="form-check-input" checked>
-                                        <label for="thursday" class="form-check-label">Thursday</label>
-                                    </div>
-                                    <div class="col-3">
-                                        <input type="checkbox" id="friday" class="form-check-input">
-                                        <label for="friday" class="form-check-label">Friday</label>
-                                    </div>
-                                    <div class="col-3">
-                                        <input type="checkbox" id="saturday" class="form-check-input">
-                                        <label for="saturday" class="form-check-label">Saturday</label>
-                                    </div>
-                                    <div class="col-3"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="monthlyOptions" style="display: none;">
-                        <!-- Monthly options UI here -->
-                        <div class="col">
-                            <div class="row mb-1">
-                                <input class="form-check-input" id="monthlyOptionsRadio_one" type="radio" name="monthlyOptionsRadioGroup">
-                                <div class="col-auto"><label class="form-label in-line">Day</label></div>
-                                <div class="col-auto"><input id="recurEveryDay" class="e-field e-input" type="number" min="1" value="1" name="recurEveryDay"></div>
-                                <div class="col-auto"><label class="form-label in-line">day(s)</label></div>
-                            </div>
-
-                            <div class="row mb-1">
-                                <input class="form-check-input" id="monthlyOptionsRadio_two" type="radio" name="monthlyOptionsRadioGroup">
-                                <div><label class="form-label in-line">The</label></div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <div id="yearlyOptions" style="display: none;">
-                        <!-- Yearly options UI here -->
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</script>
-
 @section Scripts {
-  
     <script type="text/javascript">
-
-        function onActionBegin(args) {
-            console.log("onActionBegin args.requestType", args.requestType);
-            if (args.requestType === 'eventCreate' || args.requestType === 'eventChange') {
-                var data;
-                if (args.requestType === 'eventCreate') {
-                    data = args.data[0];
-                } else if (args.requestType === 'eventChange') {
-                    data = args.data;
-                }
-                var scheduleObj = document.getElementById('schedule').ej2_instances[0];
-                if (!scheduleObj.isSlotAvailable(data.StartTime, data.EndTime)) {
-                    args.cancel = true;
-                }
-            }
-        }
-
-        function onEventRendered(args) {
-            console.log("onEventRendered args.data.EventType", args.data.EventType);
-
-            var categoryColor;
-            switch (args.data.EventType) {
-                case 'Requested':
-                    categoryColor = '#F57F17';
-                    break;
-                case 'Confirmed':
-                    categoryColor = '#7fa900';
-                    break;
-                case 'New':
-                    categoryColor = '#8e24aa';
-                    break;
-            }
-            if (!args.element || !categoryColor) {
-                return;
-            }
-            var scheduleObj = document.getElementById('schedule').ej2_instances[0];
-            if (scheduleObj.currentView === 'Agenda') {
-                (args.element.firstChild).style.borderLeftColor = categoryColor;
-            } else {
-                args.element.style.backgroundColor = categoryColor;
-            }
-        }
-
         function onPopupOpen(args) {
-            console.log("onPopupOpen args.type", args.type);
-
             if (args.type === 'Editor') {
                 $(".e-title-text").text("New Appointment");
-                $("#schedule_dialog_wrapper").width(600);
-                var statusElement = args.element.querySelector('#VisibilityId');
-                if (!statusElement.classList.contains('e-dropdownlist')) {
-                    var dropDownListObject = new ej.dropdowns.DropDownList({
-                        placeholder: 'Choose status',
-                  
-                        fields: { value: 'Value', text: 'Text' }
+
+                if (!args.element.querySelector('.custom-field-row')) {
+                    var row = ej.base.createElement('div', { className: 'custom-field-row' });
+                    var formElement = args.element.querySelector('.e-schedule-form');
+                    formElement.firstChild.insertBefore(row, args.element.querySelector('.e-description-row'));
+
+                    // Adding Contact Number field
+                    var contactContainer = ej.base.createElement('div', { className: 'custom-field-container' });
+                    var contactInputEle = ej.base.createElement('input', {
+                        className: 'e-field', attrs: { name: 'ContactNumber' }
                     });
-                    dropDownListObject.appendTo(statusElement);
-                    statusElement.setAttribute('name', 'VisibilityId');
+                    contactContainer.appendChild(contactInputEle);
+                    row.appendChild(contactContainer);
+                    var contactTextBox = new ej.inputs.TextBox({
+                        placeholder: 'Contact Number',
+                        floatLabelType: 'Always',
+                        value: args.data.ContactNumber != null ? args.data.ContactNumber : null
+                    });
+                    contactTextBox.appendTo(contactInputEle);
                 }
+
                 var startElement = args.element.querySelector('#StartTime');
                 if (!startElement.classList.contains('e-datetimepicker')) {
                     new ej.calendars.DateTimePicker({ value: new Date(startElement.value) || new Date() }, startElement);
                 }
+
                 var endElement = args.element.querySelector('#EndTime');
                 if (!endElement.classList.contains('e-datetimepicker')) {
                     new ej.calendars.DateTimePicker({ value: new Date(endElement.value) || new Date() }, endElement);
@@ -368,12 +113,79 @@
             }
         }
 
-        function onActionComplete(args) {
-            var scheduleObj = document.querySelector('.e-schedule').ej2_instances[0];
-            var data;
-            var token = $("input:hidden[name='__RequestVerificationToken']").val();
-            var headers = {};
-            headers["XSRF-TOKEN"] = token;
+        // on right click customized options
+        var selectedTarget;
+        function onContextMenuBeforeOpen(args) {
+            var newEventElement = document.querySelector('.e-new-event');
+            if (newEventElement) {
+                ej.base.remove(newEventElement);
+                ej.base.removeClass([document.querySelector('.e-selected-cell')], 'e-selected-cell');
+            }
+            var scheduleObj = document.querySelector(".e-schedule").ej2_instances[0];
+            scheduleObj.closeQuickInfoPopup();
+            var targetElement = args.event.target;
+            if (ej.base.closest(targetElement, '.e-contextmenu')) {
+                return;
+            }
+            selectedTarget = ej.base.closest(targetElement, '.e-appointment,.e-work-cells,' +
+                '.e-vertical-view .e-date-header-wrap .e-all-day-cells,.e-vertical-view .e-date-header-wrap .e-header-cells');
+            if (ej.base.isNullOrUndefined(selectedTarget)) {
+                args.cancel = true;
+                return;
+            }
+            if (selectedTarget.classList.contains('e-appointment')) {
+                var eventObj = scheduleObj.getEventDetails(selectedTarget);
+                if (eventObj.RecurrenceRule) {
+                    this.showItems(['EditRecurrenceEvent', 'DeleteRecurrenceEvent'], true);
+                    this.hideItems(['Add', 'AddRecurrence', 'Today', 'Save', 'Delete'], true);
+                } else {
+                    this.showItems(['Save', 'Delete'], true);
+                    this.hideItems(['Add', 'AddRecurrence', 'Today', 'EditRecurrenceEvent', 'DeleteRecurrenceEvent'], true);
+                }
+                return;
+            }
+            this.hideItems(['Save', 'Delete', 'EditRecurrenceEvent', 'DeleteRecurrenceEvent'], true);
+            this.showItems(['Add', 'AddRecurrence', 'Today'], true);
+        }
+
+        function onMenuItemSelect(args) {
+            var scheduleObj = document.querySelector(".e-schedule").ej2_instances[0];
+            var selectedMenuItem = args.item.id;
+            var eventObj;
+            if (selectedTarget.classList.contains('e-appointment')) {
+                eventObj = scheduleObj.getEventDetails(selectedTarget);
+            }
+            switch (selectedMenuItem) {
+                case 'Today':
+                    scheduleObj.selectedDate = new Date();
+                    break;
+                case 'Add':
+                case 'AddRecurrence':
+                    var selectedCells = scheduleObj.getSelectedElements();
+                    var activeCellsData = scheduleObj.getCellDetails(selectedCells.length > 0 ? selectedCells : selectedTarget);
+                    if (selectedMenuItem === 'Add') {
+                        scheduleObj.openEditor(activeCellsData, 'Add');
+                    } else {
+                        scheduleObj.openEditor(activeCellsData, 'Add', null, 1);
+                    }
+                    break;
+                case 'Save':
+                case 'EditOccurrence':
+                case 'EditSeries':
+                    if (selectedMenuItem === 'EditSeries') {
+                        eventObj = new ej.data.DataManager(scheduleObj.eventsData).executeLocal(new ej.data.Query().
+                            where(scheduleObj.eventFields.id, 'equal', eventObj[scheduleObj.eventFields.recurrenceID]))[0];
+                    }
+                    scheduleObj.openEditor(eventObj, selectedMenuItem);
+                    break;
+                case 'Delete':
+                    scheduleObj.deleteEvent(eventObj);
+                    break;
+                case 'DeleteOccurrence':
+                case 'DeleteSeries':
+                    scheduleObj.deleteEvent(eventObj, selectedMenuItem);
+                    break;
+            }
         }
     </script>
 }
